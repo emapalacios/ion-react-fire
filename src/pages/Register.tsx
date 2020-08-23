@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput, IonLoading } from '@ionic/react';
 import React, { useState } from 'react';
 import './Home.css';
 import { Link } from 'react-router-dom'
@@ -10,6 +10,7 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [cpassword, setCPassword] = useState<string>('')
+  const [busy, setBusy] = useState<boolean>(false)
 
   async function register() {
     if( password !== cpassword ){
@@ -18,11 +19,13 @@ const Login: React.FC = () => {
     if( username.trim() === '' || password.trim() === ''){
       return toast('Email and password are required')
     }
-
+    
+    setBusy(true)
     const res = await registerUser(username, password)
     if(res) {
       toast('You have registered successfully')
     }
+    setBusy(false)
   }
 
   return (
@@ -33,6 +36,13 @@ const Login: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
+        {busy && 
+          <IonLoading 
+            message="Please wait..."
+            duration={0}
+            isOpen={busy}
+          />
+        }
         <IonInput
           placeholder="Username"
           value={username}
