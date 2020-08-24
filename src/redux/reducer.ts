@@ -7,5 +7,5 @@ export default function reducer( state = {}, { type, payload }: {type: string, p
             }
     }
 
-    return state;
+    return state
 }

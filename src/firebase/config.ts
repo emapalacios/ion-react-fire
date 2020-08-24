@@ -25,6 +25,19 @@ export async function loginUser( email: string, password: string) {
     }
 }
 
+export function getCurrentUser(){
+    return new Promise( (resolve, reject) => {
+        const unsubscribe = firebase.auth().onAuthStateChanged( user => {
+            if( user ) {
+                resolve(user)
+            } else {
+                resolve(null)
+            }
+            unsubscribe()
+        })
+    }) 
+}
+
 export async function registerUser(email: string, password: string) {
     try {
         const res = await firebase.auth().createUserWithEmailAndPassword(
