@@ -1,12 +1,16 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput, IonLoading } from '@ionic/react'
 import React, { useState } from 'react'
 import './Home.css'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { loginUser } from '../firebase/config'
 import { toast } from '../toast'
+import { useDispatch } from 'react-redux'
+import { setUserState } from '../redux/actions'
 
 const Login: React.FC = () => {
   
+  const dispatch = useDispatch()
+  const history = useHistory()
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [busy, setBusy] = useState<boolean>(false)
@@ -15,7 +19,8 @@ const Login: React.FC = () => {
     setBusy(true)
     const res = await loginUser(username, password)
     if (res) {
-      toast('Login ok')
+      dispatch(setUserState(res.user?.email))
+      history.push('/dashboard')
     }
     setBusy(false)
   }

@@ -1,7 +1,19 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react'
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react'
 import React from 'react'
+import { useSelector } from 'react-redux';
+import { logoutUser } from '../firebase/config';
+import { useHistory } from 'react-router';
 
 const Dashboard: React.FC = () => {
+
+  const history = useHistory();
+  const username = useSelector((state: any) => state.user.username)
+
+  async function logout() {
+    await logoutUser()
+    history.push('/')
+  }
+
 
   return (
     <IonPage>
@@ -11,7 +23,8 @@ const Dashboard: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <p>Hello user</p>
+        <p>Hello {username}</p>
+        <IonButton onClick={logout}>Logout</IonButton>
       </IonContent>
     </IonPage>
   );

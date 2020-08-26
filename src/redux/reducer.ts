@@ -1,9 +1,15 @@
-export default function reducer( state = {}, { type, payload }: {type: string, payload: any}) : any {
+const defaultState = {
+    user: {}
+}
+
+export default function reducer( state = defaultState, { type, payload }: {type: string, payload: any}) : any {
     switch( type ) {
         case 'SET_USER_STATE':
             return {
                 ...state,
-                userDate: payload
+                user: {
+                    username: payload.split('@')[0]
+                }
             }
     }
 

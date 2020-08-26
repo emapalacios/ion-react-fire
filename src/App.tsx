@@ -27,6 +27,8 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import { getCurrentUser } from './firebase/config'
 import { logoWindows } from 'ionicons/icons';
+import { useDispatch } from 'react-redux';
+import { setUserState } from './redux/actions';
 
 const RoutingSystem: React.FC = () => {
   return(
@@ -44,10 +46,11 @@ const RoutingSystem: React.FC = () => {
 const App: React.FC = () => { 
 
   const [busy, setBusy] = useState<boolean>(false)
-
+  const dispatch = useDispatch()
   useEffect( ()=> {
-    getCurrentUser().then( user => {
+    getCurrentUser().then( (user: any) => {
       if( user ) {
+        dispatch(setUserState(user.email))
         window.history.replaceState({}, '', '/dashboard')
       } else {
         window.history.replaceState({}, '', '/')
