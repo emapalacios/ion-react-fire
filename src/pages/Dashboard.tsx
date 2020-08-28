@@ -20,8 +20,10 @@ const Dashboard: React.FC = () => {
   const [busy, setBusy] = useState(false)
   const [input, _setInput] = useState('')
   const [activeWordIndex, setActiveWordIndex] = useState(0)
+  const [removeIndex, setRemoveIndex] = useState(0)
+
   
-  const [activeWordList, setActiveWordList] = useState<WordType[]>(
+  const [activeWordList, setActiveWordList] = useState<(null | WordType)[]>(
     words.slice(0, 10).map( word => ({ word, done: false, correct: false })
     )
   )
@@ -47,13 +49,20 @@ const Dashboard: React.FC = () => {
       setInput('')
     } else if (value[value.length -1] === ' ') {
       setActiveWordList(list => {
-        const wordBlocks = [...list]
+        let wordBlocks: any = [...list]
         wordBlocks[activeWordIndex] = {
           ...wordBlocks[activeWordIndex],
           done: true,
           correct: wordBlocks[activeWordIndex].word === value.trim()
         }
+
+        if( wordBlocks.length > 20 ){
+          wordBlocks[removeIndex] = null
+          setRemoveIndex( count => ++count)
+        } 
+        
         setActiveWordIndex(count => ++count)
+
         wordBlocks.push({word: words[wordBlocks.length], correct: false, done: false})
         return wordBlocks
       })
@@ -72,7 +81,8 @@ const Dashboard: React.FC = () => {
       </IonHeader>
       <IonContent className="ion-padding">
         <IonLoading message="Logging out.." duration={0} isOpen={busy} />
-        {activeWordList.map( wordBlock => {
+        {activeWordList.filter(Boolean).map( block => {
+            const wordBlock = block as WordType
             const isDonde = wordBlock.done
             const isCorrect = wordBlock.correct
 
