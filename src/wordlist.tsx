@@ -7,7 +7,15 @@ let words = [
     'my',
     'name',
     'is',
-    'Emanuel'
+    'Emanuel',
+    'lolo',
+    'Wolverine',
+    'Spiderman',
+    'Thor',
+    'Captain Marvel',
+    'Catwoman',
+    'Batman',
+    'Superman'
 ] 
 
 export default words;

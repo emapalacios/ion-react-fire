@@ -4,7 +4,14 @@ import { useSelector } from 'react-redux';
 import { logoutUser } from '../firebase/config';
 import { useHistory } from 'react-router'
 import words from './../wordlist'
+
 import './Dashboard.css';
+
+type WordType = {
+  word: string
+  done: boolean
+  correct: boolean
+}
 
 const Dashboard: React.FC = () => {
 
@@ -12,7 +19,14 @@ const Dashboard: React.FC = () => {
   const username = useSelector((state: any) => state.user.username)
   const [busy, setBusy] = useState(false)
   const [input, _setInput] = useState('')
+  
+  const [activeWordList, setActiveWordList] = useState<WordType[]>(
+    words.slice(0, 15).map( word => ({ word, done: false, correct: false })
+    )
+  )
+
   const inputRef = useRef<HTMLIonInputElement>(null);
+
 
   async function logout() {
     setBusy(true)
@@ -46,9 +60,24 @@ const Dashboard: React.FC = () => {
       </IonHeader>
       <IonContent className="ion-padding">
         <IonLoading message="Logging out.." duration={0} isOpen={busy} />
-        {words.slice(0,10).map( word => (
-          <span className="word" key={word}>{word}</span>
-        ))}
+        {activeWordList.map( item => {
+            const isDonde = item.done
+            const isCorrect = item.correct
+
+            if( isDonde && isCorrect ){
+              return (
+                <span className="word done correct" key={item.word}>{item.word}</span>
+              )
+            } else if ( isDonde && !isCorrect) {
+              return (
+                <span className="word done" key={item.word}>{item.word}</span>
+              )
+            }
+            return (
+              <span className="word" key={item.word}>{item.word}</span>
+            )
+          }
+        )}
 
         <IonInput placeholder="Write the word!" 
           ref={inputRef}
