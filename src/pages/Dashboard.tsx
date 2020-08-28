@@ -19,9 +19,10 @@ const Dashboard: React.FC = () => {
   const username = useSelector((state: any) => state.user.username)
   const [busy, setBusy] = useState(false)
   const [input, _setInput] = useState('')
+  const [activeWordIndex, setActiveWordIndex] = useState(0)
   
   const [activeWordList, setActiveWordList] = useState<WordType[]>(
-    words.slice(0, 15).map( word => ({ word, done: false, correct: false })
+    words.slice(0, 10).map( word => ({ word, done: false, correct: false })
     )
   )
 
@@ -45,6 +46,17 @@ const Dashboard: React.FC = () => {
     if(value.trim() === '' ) {
       setInput('')
     } else if (value[value.length -1] === ' ') {
+      setActiveWordList(list => {
+        const wordBlocks = [...list]
+        wordBlocks[activeWordIndex] = {
+          ...wordBlocks[activeWordIndex],
+          done: true,
+          correct: wordBlocks[activeWordIndex].word === value.trim()
+        }
+        setActiveWordIndex(count => ++count)
+        wordBlocks.push({word: words[wordBlocks.length], correct: false, done: false})
+        return wordBlocks
+      })
       setInput('')
     } else {
       setInput(value)
@@ -60,21 +72,21 @@ const Dashboard: React.FC = () => {
       </IonHeader>
       <IonContent className="ion-padding">
         <IonLoading message="Logging out.." duration={0} isOpen={busy} />
-        {activeWordList.map( item => {
-            const isDonde = item.done
-            const isCorrect = item.correct
+        {activeWordList.map( wordBlock => {
+            const isDonde = wordBlock.done
+            const isCorrect = wordBlock.correct
 
             if( isDonde && isCorrect ){
               return (
-                <span className="word done correct" key={item.word}>{item.word}</span>
+                <span className="word done correct" key={wordBlock.word}>{wordBlock.word}</span>
               )
             } else if ( isDonde && !isCorrect) {
               return (
-                <span className="word done" key={item.word}>{item.word}</span>
+                <span className="word done incorrect" key={wordBlock.word}>{wordBlock.word}</span>
               )
             }
             return (
-              <span className="word" key={item.word}>{item.word}</span>
+              <span className="word" key={wordBlock.word}>{wordBlock.word}</span>
             )
           }
         )}
