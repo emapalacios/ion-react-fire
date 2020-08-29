@@ -18,18 +18,15 @@ const Dashboard: React.FC = () => {
   const history = useHistory();
   const username = useSelector((state: any) => state.user.username)
   const [busy, setBusy] = useState(false)
-  const [input, _setInput] = useState('')
   const [activeWordIndex, setActiveWordIndex] = useState(0)
   const [removeIndex, setRemoveIndex] = useState(0)
 
-  
-  const [activeWordList, setActiveWordList] = useState<(null | WordType)[]>(
+  const [activeWordList, setActiveWordList] = useState<WordType[]>(
     words.slice(0, 10).map( word => ({ word, done: false, correct: false })
     )
   )
 
   const inputRef = useRef<HTMLIonInputElement>(null);
-
 
   async function logout() {
     setBusy(true)
@@ -49,18 +46,13 @@ const Dashboard: React.FC = () => {
       setInput('')
     } else if (value[value.length -1] === ' ') {
       setActiveWordList(list => {
-        let wordBlocks: any = [...list]
+        let wordBlocks = [...list]
         wordBlocks[activeWordIndex] = {
           ...wordBlocks[activeWordIndex],
           done: true,
           correct: wordBlocks[activeWordIndex].word === value.trim()
         }
 
-        if( wordBlocks.length > 20 ){
-          wordBlocks[removeIndex] = null
-          setRemoveIndex( count => ++count)
-        } 
-        
         setActiveWordIndex(count => ++count)
 
         wordBlocks.push({word: words[wordBlocks.length], correct: false, done: false})
@@ -81,8 +73,11 @@ const Dashboard: React.FC = () => {
       </IonHeader>
       <IonContent className="ion-padding">
         <IonLoading message="Logging out.." duration={0} isOpen={busy} />
-        {activeWordList.filter(Boolean).map( block => {
-            const wordBlock = block as WordType
+
+        <p>Hello {username}</p>
+
+        {activeWordList.filter(Boolean).map( wordBlock => {
+
             const isDonde = wordBlock.done
             const isCorrect = wordBlock.correct
 
@@ -101,12 +96,11 @@ const Dashboard: React.FC = () => {
           }
         )}
 
-        <IonInput placeholder="Write the word!" 
+        <IonInput placeholder="Write the word!"
           ref={inputRef}
           onIonChange={ (e: any) => setInputValue(e.target.value) }
         />
 
-        <p>Hello {username}</p>
         <IonButton onClick={logout}>Logout</IonButton>
       </IonContent>
     </IonPage>
